@@ -12,3 +12,6 @@ This repo includes code examples written using miscellaneous JavaScript librarie
 
 ## Angular
   1. Angular
+
+## Electron
+  1. Electron <sup>[course](https://app.pluralsight.com/library/courses/electron-fundamentals)</sup>

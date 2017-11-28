@@ -1,0 +1,21 @@
+{
+  "name": "app",
+  "productName": "Photoboom",
+  "version": "0.1.0",
+  "license": "ISC",
+  "author": "Milad Irannejad",
+  "description": "An example Electron application",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "rimraf Photoboom-* && electron-packager . --icon=app --platform=darwin,linux --arch=x64"
+  },
+  "devDependencies": {
+    "child_process": "^1.0.2",
+    "electron": "1.7.9",
+    "electron-packager": "^9.1.0",
+    "path": "^0.12.7",
+    "rimraf": "^2.6.2",
+    "url": "^0.11.0"
+  }
+}
