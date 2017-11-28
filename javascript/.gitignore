@@ -1,0 +1,10 @@
+*.log
+*.lock
+package-lock.json
+
+dist/
+public/
+build/
+reports/
+coverage/
+node_modules/

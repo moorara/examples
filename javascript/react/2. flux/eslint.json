@@ -1,0 +1,19 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jquery": true
+  },
+  "rules": {
+  },
+  "globals": {
+    "$": true,
+    "jQuery": true
+  }
+}

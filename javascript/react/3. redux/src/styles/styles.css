@@ -1,0 +1,27 @@
+#app {
+  margin: 0 auto;
+  color: #4d4d4d;
+  min-width: 600px;
+  max-width: 900px;
+  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+nav {
+  padding-top: 20px;
+}
+
+a.active {
+  color: orange;
+}
+
+.home {
+  padding: 40px 40px 40px 40px;
+}
+
+.page {
+  padding: 10px 20px 10px 20px;
+}
+
+.dots {
+  padding-top: 16px
+}
