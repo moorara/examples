@@ -1,0 +1,12 @@
+*.log
+npm-debug.log
+package-lock.json
+
+/coverage
+/node_modules
+
+/dist
+/tmp
+/out-tsc
+/e2e/*.js
+/e2e/*.map

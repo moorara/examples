@@ -1,0 +1,25 @@
+#message-list h2 {
+  color: #eeeeee;
+  font-size: 28px;
+}
+
+#message-list table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#message-list th, td {
+  padding: 8px;
+  text-align: left;
+  font-size: 18px;
+  color: #ccc;
+  border-bottom: 1px solid #ddd;
+}
+
+#message-list tr:hover {
+  background-color: #5599cc
+}
+
+#message-list table a {
+  color: orange;
+}

@@ -9,3 +9,6 @@ This repo includes code examples written using miscellaneous JavaScript librarie
 
 ## Vue.js
   1. Vue.js
+
+## Angular
+  1. Angular

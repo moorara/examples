@@ -1,0 +1,17 @@
+<div id="message-list">
+  <h2>List of Messages #{{ messages.length }}</h2>
+  <div style="overflow-x:auto;">
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Author</th>
+        <th>Text</th>
+      </tr>
+      <tr *ngFor='let message of messages'>
+          <td><a [routerLink]="[ '/messages', message.id ]">{{ message.id }}</a></td>
+          <td>{{ message.author }}</td>
+          <td>{{ message.text }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

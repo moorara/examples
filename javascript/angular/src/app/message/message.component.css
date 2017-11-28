@@ -1,0 +1,17 @@
+#message h2 {
+  color: #eeeeee;
+  font-size: 28px;
+}
+
+#message button {
+  cursor: pointer;
+  margin: 4px 2px;
+  padding: 12px 28px;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  color: white;
+  background-color: #555555;
+  display: inline-block;
+}
