@@ -9,3 +9,12 @@ A simple single-page application (SPA) using
 docker-compose up -d
 go run main.go
 ```
+
+## gorilla-websocket-vue
+A simple single-page real-time chat application using
+[Gorilla WebSocket](http://www.gorillatoolkit.org/pkg/websocket).
+<sup>[tutorial](https://scotch.io/bar-talk/build-a-realtime-chat-server-with-go-and-websockets)</sup>
+
+```
+go run main.go
+```
