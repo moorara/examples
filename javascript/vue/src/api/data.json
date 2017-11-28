@@ -1,0 +1,6 @@
+{
+  "messages": [
+    { "text": "Hello World!" },
+    { "text": "The is a Vue.js app" }
+  ]
+}

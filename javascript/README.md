@@ -6,3 +6,6 @@ This repo includes code examples written using miscellaneous JavaScript librarie
   2. React & Flux <sup>[course](https://app.pluralsight.com/library/courses/react-flux-building-applications)</sup>
   3. React & Redux <sup>[course](https://app.pluralsight.com/library/courses/react-redux-react-router-es6)</sup>
   4. Advanced React.js <sup>[course](https://app.pluralsight.com/library/courses/reactjs-advanced)</sup>
+
+## Vue.js
+  1. Vue.js
