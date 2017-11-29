@@ -1,0 +1,73 @@
+x-goapp: &goapp
+  image: golang:1.9-alpine
+  depends_on:
+    - rabbitmq
+    - postgres
+  environment:
+    - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    - POSTGRES_URL=postgres://root:toor@postgres/distributed?sslmode=disable
+  volumes:
+    - ".:/go/src/github.com/moorara/toys/go/rabbitmq-postgres"
+
+
+version: "3.4"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "8080:15672"
+  postgres:
+    image: postgres
+    hostname: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: toor
+    volumes:
+      - "./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql"
+
+  sensor-boiler-pressure:
+    <<: *goapp
+    container_name: sensor-boiler-pressure
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/sensor/exec/main.go --name boiler_pressure
+  sensor-condensor-pressure:
+    <<: *goapp
+    container_name: sensor-condensor-pressure
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/sensor/exec/main.go --name condensor_pressure
+  sensor-turbine-pressure:
+    <<: *goapp
+    container_name: sensor-turbine-pressure
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/sensor/exec/main.go --name turbine_pressure
+  sensor-boiler-temp:
+    <<: *goapp
+    container_name: sensor-boiler-temp
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/sensor/exec/main.go --name boiler_temp
+  sensor-turbine-temp:
+    <<: *goapp
+    container_name: sensor-turbine-temp
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/sensor/exec/main.go --name turbine_temp
+  sensor-condensor-temp:
+    <<: *goapp
+    container_name: sensor-condensor-temp
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/sensor/exec/main.go --name condensor_temp
+
+  coordinator:
+    <<: *goapp
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/coordinator/exec/main.go
+
+  datamanager:
+    <<: *goapp
+    command: go run /go/src/github.com/moorara/toys/go/rabbitmq-postgres/data/exec/main.go
+
+  webapp:
+    <<: *goapp
+    ports:
+      - "3000:3000"
+    command: sh -c "cd /go/src/github.com/moorara/toys/go/rabbitmq-postgres/web && go run main.go"

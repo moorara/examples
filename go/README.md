@@ -18,3 +18,17 @@ A simple single-page real-time chat application using
 ```
 go run main.go
 ```
+
+## rabbitmq-postgres
+A simple distributed monitoring application using
+[RabbitMQ](http://www.rabbitmq.com) and [PostgreSQL](https://www.postgresql.org).
+<sup>[course](https://app.pluralsight.com/library/courses/go-build-distributed-applications)</sup>
+
+```
+make up
+```
+
+You can access RabbitMQ management console at [http://localhost:8080](http://localhost:8080).
+Username and password are both `guest`.
+
+You can also see the basic monitoring web application at [http://localhost:3000](http://localhost:3000).
