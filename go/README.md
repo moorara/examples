@@ -1,4 +1,4 @@
-# Go Examples
+# Go Toys
 This repo includes code examples written in [Go](https://golang.org).
 
 ## echo-mgo-vue

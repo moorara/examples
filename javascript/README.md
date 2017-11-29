@@ -1,4 +1,4 @@
-# JavaScript Examples
+# JavaScript Toys
 This repo includes code examples written using miscellaneous JavaScript libraries and frameworks.
 
 ## React
