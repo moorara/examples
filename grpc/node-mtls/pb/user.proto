@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+message User {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  UserType type = 4;
+  
+  enum UserType {
+    FREE = 0;
+    PREMIUM = 1;
+  }
+}
+
+message MetadataRequest {}
+message MetadataResponse {}
+
+message UserRequest {
+  User user = 1;
+}
+
+message UserResponse {
+  User user = 1;
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message GetAllUsersRequest {
+}
+
+message UploadPhotoRequest {
+  bytes data = 1;
+}
+
+message UploadPhotoResponse {
+  bool done = 1;
+}
+
+service UserService {
+  rpc SendMetadata(MetadataRequest) returns (MetadataResponse);
+  rpc GetUser (GetUserRequest) returns (UserResponse);
+  rpc GetAllUsers (GetAllUsersRequest) returns (stream UserResponse);
+  rpc SaveUser (UserRequest) returns (UserResponse);
+  rpc SaveAllUsers (stream UserRequest) returns (stream UserResponse);
+  rpc UploadPhoto (stream UploadPhotoRequest) returns (UploadPhotoResponse);
+}
