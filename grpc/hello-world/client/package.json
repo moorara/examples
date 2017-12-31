@@ -1,0 +1,11 @@
+{
+  "name": "grpc-client",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Milad Irannejad",
+  "license": "ISC",
+  "dependencies": {
+    "google-protobuf": "^3.5.0",
+    "grpc": "^1.7.2"
+  }
+}
