@@ -1,0 +1,65 @@
+input AuthProvider {
+  email: String!
+  password: String!
+}
+
+type SigninPayload {
+    user: User
+    token: String
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String
+    votes: [Vote!]!
+}
+
+type Link {
+  id: ID!
+  url: String!
+  description: String!
+  postedBy: User
+  votes: [Vote!]!
+}
+
+type Vote {
+  id: ID!
+  user: User!
+  link: Link!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+input LinkFilter {
+  url_contains: String
+  description_contains: String
+}
+
+input LinkSubscriptionFilter {
+  mutation_in: [MutationType!]
+}
+
+type LinkSubscriptionPayload {
+  mutation: MutationType!
+  link: Link
+}
+
+type Query {
+  allLinks(filter: LinkFilter, skip: Int, first: Int): [Link!]!
+}
+
+type Subscription {
+  Link(filter: LinkSubscriptionFilter): LinkSubscriptionPayload
+}
+
+type Mutation {
+  createUser(name: String!, authProvider: AuthProvider!): User
+  signinUser(authProvider: AuthProvider): SigninPayload!
+  createLink(url: String!, description: String!): Link
+  createVote(linkId: ID!): Vote
+}
