@@ -60,7 +60,6 @@ describe('Mongo', () => {
 
     beforeEach(() => {
       opts = {
-        useMongoClient: true,
         autoReconnect: true,
         auth: {
           user: config.mongoUser,
