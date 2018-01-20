@@ -19,7 +19,6 @@ class Mongo {
       let connection = this.mongoose.connection
 
       let opts = {
-        useMongoClient: true,
         autoReconnect: true
       }
 
