@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 )
 
 // HealthHandler is the http handler for health requests
@@ -25,7 +26,7 @@ func GetNotFoundHandler(logger log.Logger) http.HandlerFunc {
 
 		err := json.NewEncoder(w).Encode(body)
 		if err != nil && logger != nil {
-			logger.Log("message", "Error sending not found (404)")
+			level.Error(logger).Log("message", "Error sending not found (404)")
 		}
 	}
 }

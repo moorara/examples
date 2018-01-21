@@ -28,21 +28,69 @@ func (s *mockServer) Shutdown(context.Context) error {
 	return s.ShutdownError
 }
 
+func TestNewLogger(t *testing.T) {
+	tests := []struct {
+		name   string
+		config config.Config
+	}{
+		{
+			"Debug",
+			config.Config{
+				LogLevel:    "debug",
+				ServiceName: "job-service",
+			},
+		},
+		{
+			"Info",
+			config.Config{
+				LogLevel:    "info",
+				ServiceName: "auth-service",
+			},
+		},
+		{
+			"Warn",
+			config.Config{
+				LogLevel:    "warn",
+				ServiceName: "gateway-service",
+			},
+		},
+		{
+			"Error",
+			config.Config{
+				LogLevel:    "error",
+				ServiceName: "storage-service",
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			logger := newLogger(tc.config)
+
+			assert.NotNil(t, logger)
+		})
+	}
+}
+
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name   string
 		config config.Config
 	}{
 		{
-			"No.1",
+			"Server1",
 			config.Config{
+				LogLevel:    "info",
+				ServiceName: "go-service",
 				ServicePort: ":4010",
 				RedisURL:    "redis://redis:6379",
 			},
 		},
 		{
-			"No.2",
+			"Server2",
 			config.Config{
+				LogLevel:    "debug",
+				ServiceName: "golang-service",
 				ServicePort: ":4020",
 				RedisURL:    "redis://user:pass@redis:6389",
 			},

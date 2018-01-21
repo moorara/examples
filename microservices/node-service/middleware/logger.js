@@ -19,12 +19,15 @@ module.exports = {
   http (options) {
     options = options || {}
     options.winston = options.winston || Logger.getWinstonLogger()
+    let context = Object.assign({}, Logger.context, { logger: 'HttpMiddleware' })
 
     let loggerMiddleware = expressWinston.logger({
       winstonInstance: options.winston,
+      expressFormat: process.env.NODE_ENV === 'development',
 
       statusLevels: true,
-      expressFormat: process.env.NODE_ENV === 'development',
+      meta: true,
+      baseMeta: context,
 
       skip: options.skip || defaultSkip,
       ignoreRoute: options.ignoreRoute || defaultIgnoreRoute,

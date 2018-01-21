@@ -16,4 +16,5 @@ services:
     ports:
       - "4010:4010"
     environment:
+      - LOG_LEVEL=debug
       - REDIS_URL=redis://redis:6379

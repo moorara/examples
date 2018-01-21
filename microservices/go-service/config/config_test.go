@@ -71,6 +71,9 @@ func TestGetValue(t *testing.T) {
 
 func TestGetConfig(t *testing.T) {
 	config := GetConfig()
+
+	assert.Equal(t, defaultLogLevel, config.LogLevel)
+	assert.Equal(t, defaultServiceName, config.ServiceName)
 	assert.Equal(t, defaultServicePort, config.ServicePort)
 	assert.Equal(t, defaultRedisURL, config.RedisURL)
 }
