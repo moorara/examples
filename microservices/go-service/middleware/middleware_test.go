@@ -46,7 +46,7 @@ func TestWrapAll(t *testing.T) {
 			handler(w, r)
 			res := w.Result()
 
-			assert.Equal(t, res.StatusCode, http.StatusNotFound)
+			assert.Equal(t, http.StatusNotFound, res.StatusCode)
 			for _, m := range tc.middleware {
 				mock, ok := m.(*mockMiddleware)
 				assert.True(t, ok)

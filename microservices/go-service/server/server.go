@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	"github.com/gorilla/mux"
 	"github.com/moorara/toys/microservices/go-service/config"
 	"github.com/moorara/toys/microservices/go-service/handler"
@@ -29,13 +30,33 @@ type (
 	}
 )
 
+func newLogger(config config.Config) log.Logger {
+	logger := log.NewJSONLogger(os.Stdout)
+	logger = log.With(logger, "caller", log.DefaultCaller)
+	logger = log.With(logger, "service", config.ServiceName, "logger", "GoKit")
+	logger = level.NewInjector(logger, level.InfoValue()) // default level
+
+	switch config.LogLevel {
+	case "debug":
+		logger = level.NewFilter(logger, level.AllowDebug())
+	case "info":
+		logger = level.NewFilter(logger, level.AllowInfo())
+	case "warn":
+		logger = level.NewFilter(logger, level.AllowWarn())
+	case "error":
+		logger = level.NewFilter(logger, level.AllowError())
+	}
+
+	return logger
+}
+
 // New creates a new http server
 func New(config config.Config) *HTTPServer {
-	logger := log.NewJSONLogger(os.Stdout)
 	metrics := util.NewMetrics("go_service")
+	logger := newLogger(config)
 
-	loggerMiddleware := middleware.NewLoggerMiddleware(logger)
 	metricsMiddleware := middleware.NewMetricsMiddleware(metrics)
+	loggerMiddleware := middleware.NewLoggerMiddleware(logger)
 
 	redisPersister := service.NewRedisPersister(config.RedisURL)
 	sessionHandler := handler.NewSessionHandler(redisPersister, logger)

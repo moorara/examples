@@ -10,14 +10,32 @@ import (
 )
 
 func TestGetMetricsWrapper(t *testing.T) {
-	r := httptest.NewRequest("GET", "http://service/sessions", nil)
-	w := httptest.NewRecorder()
+	tests := []struct {
+		name       string
+		statusCode int
+	}{
+		{"101", 101},
+		{"200", 200},
+		{"302", 302},
+		{"404", 404},
+		{"500", 500},
+	}
 
-	metrics := util.NewMetrics("go_service")
-	metricsMiddleware := NewMetricsMiddleware(metrics)
-	handler := metricsMiddleware.Wrap(http.NotFound)
-	handler(w, r)
-	res := w.Result()
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			metrics := util.NewMetrics("go_service")
+			metricsMiddleware := NewMetricsMiddleware(metrics)
 
-	assert.Equal(t, res.StatusCode, http.StatusNotFound)
+			r := httptest.NewRequest("GET", "http://service/sessions", nil)
+			w := httptest.NewRecorder()
+
+			handler := metricsMiddleware.Wrap(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(tc.statusCode)
+			})
+			handler(w, r)
+			res := w.Result()
+
+			assert.Equal(t, tc.statusCode, res.StatusCode)
+		})
+	}
 }

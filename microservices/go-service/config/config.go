@@ -6,12 +6,16 @@ import (
 )
 
 const (
+	defaultLogLevel    = "info"
+	defaultServiceName = "go-service"
 	defaultServicePort = ":4010"
 	defaultRedisURL    = "redis://localhost:6379"
 )
 
 // Config represents configurations of service
 type Config struct {
+	LogLevel    string
+	ServiceName string
 	ServicePort string
 	RedisURL    string
 }
@@ -39,6 +43,8 @@ func getValue(name, defaultValue string) string {
 // GetConfig retrieves configuratinos
 func GetConfig() Config {
 	return Config{
+		LogLevel:    getValue("LOG_LEVEL", defaultLogLevel),
+		ServiceName: getValue("SERVICE_NAME", defaultServiceName),
 		ServicePort: getValue("SERVICE_PORT", defaultServicePort),
 		RedisURL:    getValue("REDIS_URL", defaultRedisURL),
 	}

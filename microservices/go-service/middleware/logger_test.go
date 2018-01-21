@@ -11,14 +11,32 @@ import (
 )
 
 func TestWrapWithLogger(t *testing.T) {
-	r := httptest.NewRequest("GET", "http://service/sessions", nil)
-	w := httptest.NewRecorder()
+	tests := []struct {
+		name       string
+		statusCode int
+	}{
+		{"101", 101},
+		{"200", 200},
+		{"302", 302},
+		{"404", 404},
+		{"500", 500},
+	}
 
-	logger := log.NewJSONLogger(os.Stdout)
-	loggerMiddleware := NewLoggerMiddleware(logger)
-	handler := loggerMiddleware.Wrap(http.NotFound)
-	handler(w, r)
-	res := w.Result()
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			logger := log.NewJSONLogger(os.Stdout)
+			loggerMiddleware := NewLoggerMiddleware(logger)
 
-	assert.Equal(t, res.StatusCode, http.StatusNotFound)
+			r := httptest.NewRequest("GET", "http://service/sessions", nil)
+			w := httptest.NewRecorder()
+
+			handler := loggerMiddleware.Wrap(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(tc.statusCode)
+			})
+			handler(w, r)
+			res := w.Result()
+
+			assert.Equal(t, tc.statusCode, res.StatusCode)
+		})
+	}
 }
