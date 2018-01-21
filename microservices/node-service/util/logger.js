@@ -5,16 +5,14 @@ const LOG_LEVELS = { fatal: 0, error: 1, warn: 2, info: 3, debug: 4, trace: 5 }
 
 /**
  * options:
- *   - level: trace|debug|info|warn|error|fatal
- *   - transports: [ ... ]
  *   - context: { ... }
  *   - winston: a winston logger instance
  */
 class Logger {
-  constructor (name, options) {
+  constructor (logger, options) {
     options = options || {}
     this.winston = options.winston || Logger.getWinstonLogger()
-    this.context = Object.assign({ pid: process.pid }, Logger.context, options.context, name ? { name } : {})
+    this.context = Object.assign({ pid: process.pid }, Logger.context, options.context, logger ? { logger } : {})
   }
 
   _log (level, args) {
