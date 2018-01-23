@@ -32,7 +32,6 @@ type (
 
 func newLogger(config config.Config) log.Logger {
 	logger := log.NewJSONLogger(os.Stdout)
-	logger = log.With(logger, "caller", log.DefaultCaller)
 	logger = log.With(logger, "service", config.ServiceName, "logger", "GoKit")
 	logger = level.NewInjector(logger, level.InfoValue()) // default level
 
