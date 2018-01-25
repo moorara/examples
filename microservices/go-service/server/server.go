@@ -3,10 +3,8 @@ package server
 import (
 	"context"
 	"net/http"
-	"os"
 
 	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
 	"github.com/gorilla/mux"
 	"github.com/moorara/toys/microservices/go-service/config"
 	"github.com/moorara/toys/microservices/go-service/handler"
@@ -30,29 +28,10 @@ type (
 	}
 )
 
-func newLogger(config config.Config) log.Logger {
-	logger := log.NewJSONLogger(os.Stdout)
-	logger = log.With(logger, "service", config.ServiceName, "logger", "GoKit")
-	logger = level.NewInjector(logger, level.InfoValue()) // default level
-
-	switch config.LogLevel {
-	case "debug":
-		logger = level.NewFilter(logger, level.AllowDebug())
-	case "info":
-		logger = level.NewFilter(logger, level.AllowInfo())
-	case "warn":
-		logger = level.NewFilter(logger, level.AllowWarn())
-	case "error":
-		logger = level.NewFilter(logger, level.AllowError())
-	}
-
-	return logger
-}
-
 // New creates a new http server
 func New(config config.Config) *HTTPServer {
 	metrics := util.NewMetrics("go_service")
-	logger := newLogger(config)
+	logger := util.NewLogger(config.LogLevel, config.ServiceName, "go-kit")
 
 	metricsMiddleware := middleware.NewMetricsMiddleware(metrics)
 	loggerMiddleware := middleware.NewLoggerMiddleware(logger)
