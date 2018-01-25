@@ -28,50 +28,6 @@ func (s *mockServer) Shutdown(context.Context) error {
 	return s.ShutdownError
 }
 
-func TestNewLogger(t *testing.T) {
-	tests := []struct {
-		name   string
-		config config.Config
-	}{
-		{
-			"Debug",
-			config.Config{
-				LogLevel:    "debug",
-				ServiceName: "job-service",
-			},
-		},
-		{
-			"Info",
-			config.Config{
-				LogLevel:    "info",
-				ServiceName: "auth-service",
-			},
-		},
-		{
-			"Warn",
-			config.Config{
-				LogLevel:    "warn",
-				ServiceName: "gateway-service",
-			},
-		},
-		{
-			"Error",
-			config.Config{
-				LogLevel:    "error",
-				ServiceName: "storage-service",
-			},
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			logger := newLogger(tc.config)
-
-			assert.NotNil(t, logger)
-		})
-	}
-}
-
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name   string
