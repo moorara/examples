@@ -2,9 +2,9 @@
 const sinon = require('sinon')
 const should = require('should')
 
-const TeamService = require('../../../services/team')
+const LinkService = require('../../../services/link')
 
-describe('TeamService', () => {
+describe('LinkService', () => {
   let config, logger
   let Model, _Model
   let modelInstance, _modelInstance
@@ -37,9 +37,9 @@ describe('TeamService', () => {
     modelInstance.save = () => {}
     _modelInstance = sinon.mock(modelInstance)
 
-    service = new TeamService(config, {
+    service = new LinkService(config, {
       logger,
-      TeamModel: Model
+      LinkModel: Model
     })
     _service = sinon.mock(service)
   })
@@ -52,24 +52,29 @@ describe('TeamService', () => {
 
   describe('constructor', () => {
     it('should create a new service with defaults', () => {
-      service = new TeamService({})
+      service = new LinkService({})
       should.exist(service.logger)
-      should.exist(service.TeamModel)
+      should.exist(service.LinkModel)
     })
   })
 
   describe('create', () => {
     let specs
-    let savedTeam
+    let savedLink
 
     beforeEach(() => {
-      specs = { name: 'Great', size: '5' }
-      savedTeam = Object.assign({}, specs, {
+      specs = {
+        url: 'https://nodejs.org',
+        title: 'Node.js',
+        tags: ['JavaScript'],
+        rank: 1
+      }
+      savedLink = Object.assign({}, specs, {
         id: '2222-bbbb-4444-dddd',
         createdAt: new Date(),
         updatedAt: new Date()
       })
-      savedTeam.toJSON = () => savedTeam
+      savedLink.toJSON = () => savedLink
     })
 
     it('should reject with error when model query fails', done => {
@@ -81,11 +86,11 @@ describe('TeamService', () => {
         done()
       })
     })
-    it('should resolve with new team when model query succeeds', done => {
-      _modelInstance.expects('save').resolves(savedTeam)
+    it('should resolve with new link when model query succeeds', done => {
+      _modelInstance.expects('save').resolves(savedLink)
       service.create(specs).then(t => {
         _modelInstance.verify()
-        t.should.eql(savedTeam)
+        t.should.eql(savedLink)
         done()
       }).catch(done)
     })
@@ -120,39 +125,39 @@ describe('TeamService', () => {
         done()
       })
     })
-    it('should resolves with retrieved teams when model query succeeds', done => {
+    it('should resolves with links when model query succeeds', done => {
       _Model.expects('find').returns(Model)
       _Model.expects('limit').returns(Model)
       _Model.expects('skip').returns(Model)
       _Model.expects('exec').resolves([ t1, t2, t3 ])
-      service.getAll().then(teams => {
+      service.getAll().then(links => {
         _Model.verify()
-        teams.should.eql([ t1, t2, t3 ])
+        links.should.eql([ t1, t2, t3 ])
         done()
       }).catch(done)
     })
-    it('should resolves with retrieved teams when model query succeeds', done => {
-      query = { name: 'fc', minSize: 3, maxSize: 10, limit: 20, skip: 10 }
-      let mongoQuery = { name: /.*fc.*/, size: { $gte: 3, $lte: 10 } }
+    it('should resolves with links when model query succeeds', done => {
+      query = { url: 'com', title: 'website', tags: 'javascript,go', minRank: '3', maxRank: '10', limit: '20', skip: '10' }
+      let mongoQuery = { url: /.*com.*/i, title: /.*website.*/i, tags: { $in: ['javascript', 'go'] }, rank: { $gte: 3, $lte: 10 } }
       _Model.expects('find').withArgs(mongoQuery).returns(Model)
       _Model.expects('limit').withArgs(+query.limit).returns(Model)
       _Model.expects('skip').withArgs(+query.skip).returns(Model)
       _Model.expects('exec').resolves([ t1, t2, t3 ])
-      service.getAll(query).then(teams => {
+      service.getAll(query).then(links => {
         _Model.verify()
-        teams.should.eql([ t1, t2, t3 ])
+        links.should.eql([ t1, t2, t3 ])
         done()
       }).catch(done)
     })
   })
 
   describe('get', () => {
-    let id, team
+    let id, link
 
     beforeEach(() => {
       id = '1111-aaaa'
-      team = { id }
-      team.toJSON = () => team
+      link = { id }
+      link.toJSON = () => link
     })
 
     it('should rejects with error when model query fails', done => {
@@ -172,8 +177,8 @@ describe('TeamService', () => {
         done()
       }).catch(done)
     })
-    it('should resolves with retrieved team when model query succeeds', done => {
-      _Model.expects('findById').withArgs(id).resolves(team)
+    it('should resolves with link when model query succeeds', done => {
+      _Model.expects('findById').withArgs(id).resolves(link)
       service.get(id).then(t => {
         _Model.verify()
         t.id.should.equal(id)
@@ -183,13 +188,13 @@ describe('TeamService', () => {
   })
 
   describe('update', () => {
-    let id, specs, team
+    let id, specs, link
 
     beforeEach(() => {
       id = '2222-bbbb'
-      specs = { name: 'Awesome', size: 7 }
-      team = { id, name: specs.name, size: specs.size }
-      team.toJSON = () => team
+      specs = { url: 'https://nodejs.org', title: 'Node.js', tags: ['javascript'], rank: 1 }
+      link = Object.assign({ id }, specs)
+      link.toJSON = () => link
     })
 
     it('should rejects with error when model query fails', done => {
@@ -209,8 +214,8 @@ describe('TeamService', () => {
         done()
       }).catch(done)
     })
-    it('should resolves with updated team when model query succeeds', done => {
-      _Model.expects('findByIdAndUpdate').withArgs(id, specs).resolves(team)
+    it('should resolves with updated link when model query succeeds', done => {
+      _Model.expects('findByIdAndUpdate').withArgs(id, specs).resolves(link)
       service.update(id, specs).then(t => {
         _Model.verify()
         t.id.should.equal(id)
@@ -220,12 +225,12 @@ describe('TeamService', () => {
   })
 
   describe('delete', () => {
-    let id, team
+    let id, link
 
     beforeEach(() => {
       id = '3333-cccc'
-      team = { id }
-      team.toJSON = () => team
+      link = { id }
+      link.toJSON = () => link
     })
 
     it('should rejects with error when model query fails', done => {
@@ -245,8 +250,8 @@ describe('TeamService', () => {
         done()
       }).catch(done)
     })
-    it('should resolves with deleted team when model query succeeds', done => {
-      _Model.expects('findByIdAndRemove').withArgs(id).resolves(team)
+    it('should resolves with deleted link when model query succeeds', done => {
+      _Model.expects('findByIdAndRemove').withArgs(id).resolves(link)
       service.delete(id).then(t => {
         _Model.verify()
         t.id.should.equal(id)
