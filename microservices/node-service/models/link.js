@@ -1,10 +1,10 @@
 const _ = require('lodash')
 const mongoose = require('mongoose')
 
-const MODEL_NAME = 'Team'
-const PUBLIC_PROPERTIES = [ 'id', 'name', 'size' ]
+const MODEL_NAME = 'Link'
+const PUBLIC_PROPERTIES = [ 'id', 'url', 'title', 'tags', 'rank' ]
 
-class Team {
+class Link {
   constructor (config, options) {
     options = options || {}
     this.Model = this._model()
@@ -16,8 +16,10 @@ class Team {
     }
 
     const schema = new mongoose.Schema({
-      size: Number,
-      name: { type: String, unique: true, required: true, index: true },
+      url: { type: String, required: true, unique: true, index: true },
+      title: { type: String, required: true },
+      tags: [ String ],
+      rank: Number,
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
     })
@@ -31,12 +33,12 @@ class Team {
       next()
     })
 
-    schema.methods.formatName = function () {
-      return this.name.replace(/\b\w/g, l => l.toUpperCase())
+    schema.methods.formatTitle = function () {
+      return this.title.replace(/\b\w/g, l => l.toUpperCase())
     }
 
     return mongoose.model(MODEL_NAME, schema)
   }
 }
 
-module.exports = Team
+module.exports = Link

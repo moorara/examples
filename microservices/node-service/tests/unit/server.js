@@ -18,7 +18,7 @@ describe('Server', () => {
       use () {}
     }
     routers = {
-      teams: {
+      links: {
         router: {}
       }
     }
