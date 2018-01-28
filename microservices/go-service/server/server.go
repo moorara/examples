@@ -37,16 +37,16 @@ func New(config config.Config) *HTTPServer {
 	loggerMiddleware := middleware.NewLoggerMiddleware(logger)
 
 	redisPersister := service.NewRedisPersister(config.RedisURL)
-	sessionHandler := handler.NewSessionHandler(redisPersister, logger)
-	postSessionHandler := middleware.WrapAll(sessionHandler.PostSession, metricsMiddleware, loggerMiddleware)
-	getSessionHandler := middleware.WrapAll(sessionHandler.GetSession, metricsMiddleware, loggerMiddleware)
+	voteHandler := handler.NewVoteHandler(redisPersister, logger)
+	postVoteHandler := middleware.WrapAll(voteHandler.PostVote, metricsMiddleware, loggerMiddleware)
+	getVoteHandler := middleware.WrapAll(voteHandler.GetVote, metricsMiddleware, loggerMiddleware)
 
 	router := mux.NewRouter()
 	router.NotFoundHandler = handler.GetNotFoundHandler(logger)
 	router.HandleFunc("/health", handler.HealthHandler).Methods("GET")
 	router.HandleFunc("/metrics", metrics.GetHandler().ServeHTTP)
-	router.HandleFunc("/sessions", postSessionHandler).Methods("POST")
-	router.HandleFunc("/sessions/{id}", getSessionHandler).Methods("GET")
+	router.HandleFunc("/v1/votes", postVoteHandler).Methods("POST")
+	router.HandleFunc("/v1/votes/{id}", getVoteHandler).Methods("GET")
 
 	return &HTTPServer{
 		config: config,

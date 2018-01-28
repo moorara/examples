@@ -27,7 +27,7 @@ func TestWrapWithLogger(t *testing.T) {
 			logger := log.NewJSONLogger(os.Stdout)
 			loggerMiddleware := NewLoggerMiddleware(logger)
 
-			r := httptest.NewRequest("GET", "http://service/sessions", nil)
+			r := httptest.NewRequest("GET", "http://service/votes", nil)
 			w := httptest.NewRecorder()
 
 			handler := loggerMiddleware.Wrap(func(w http.ResponseWriter, r *http.Request) {

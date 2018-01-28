@@ -15,27 +15,27 @@ const (
 )
 
 type mockPersister struct {
-	SaveCalled bool
-	SaveError  error
+	saveCalled bool
+	saveError  error
 
-	LoadCalled bool
-	LoadData   []byte
-	LoadError  error
+	loadCalled bool
+	loadData   []byte
+	loadError  error
 }
 
 func (mp *mockPersister) Save(key string, data []byte, ttl time.Duration) error {
 	time.Sleep(delay)
-	mp.SaveCalled = true
-	return mp.SaveError
+	mp.saveCalled = true
+	return mp.saveError
 }
 
 func (mp *mockPersister) Load(key string) ([]byte, error) {
 	time.Sleep(delay)
-	mp.LoadCalled = true
-	return mp.LoadData, mp.LoadError
+	mp.loadCalled = true
+	return mp.loadData, mp.loadError
 }
 
-func TestNewSessionManager(t *testing.T) {
+func TestNewVoteManager(t *testing.T) {
 	tests := []struct {
 		name     string
 		redisURL string
@@ -53,20 +53,20 @@ func TestNewSessionManager(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			rp := NewRedisPersister(tc.redisURL)
-			sm := NewSessionManager(rp)
+			sm := NewVoteManager(rp)
 			assert.NotNil(t, sm)
 		})
 	}
 }
 
-func TestSessionManagerCreate(t *testing.T) {
+func TestVoteManagerCreate(t *testing.T) {
 	tests := []struct {
-		name         string
-		saveError    error
-		context      func() context.Context
-		sessionName  string
-		sessionValue int
-		expectError  bool
+		name        string
+		saveError   error
+		context     func() context.Context
+		linkID      string
+		stars       int
+		expectError bool
 	}{
 		{
 			"PersisterError",
@@ -95,45 +95,45 @@ func TestSessionManagerCreate(t *testing.T) {
 			func() context.Context {
 				return context.Background()
 			},
-			"Milad",
-			27,
+			"2222-bbbb",
+			5,
 			false,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			sm := &redisSessionManager{
+			sm := &redisVoteManager{
 				persister: &mockPersister{
-					SaveError: tc.saveError,
+					saveError: tc.saveError,
 				},
-				sessionTTL: 1 * time.Minute,
+				voteTTL: 1 * time.Minute,
 			}
 
-			session, err := sm.Create(tc.context(), tc.sessionName, tc.sessionValue)
+			vote, err := sm.Create(tc.context(), tc.linkID, tc.stars)
 
 			if tc.expectError {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, tc.sessionName, session.Name)
-				assert.Equal(t, tc.sessionValue, session.Value)
+				assert.Equal(t, tc.linkID, vote.LinkID)
+				assert.Equal(t, tc.stars, vote.Stars)
 			}
 		})
 	}
 }
 
-func TestSessionManagerGet(t *testing.T) {
+func TestVoteManagerGet(t *testing.T) {
 	tests := []struct {
-		name                 string
-		loadData             []byte
-		loadError            error
-		context              func() context.Context
-		sessionID            string
-		expectError          bool
-		expectedSessionID    string
-		expectedSessionName  string
-		expectedSessionValue int
+		name               string
+		loadData           []byte
+		loadError          error
+		context            func() context.Context
+		voteID             string
+		expectError        bool
+		expectedVoteID     string
+		expectedVoteLinkID string
+		expectedVoteStars  int
 	}{
 		{
 			"PersisterError",
@@ -158,35 +158,35 @@ func TestSessionManagerGet(t *testing.T) {
 		},
 		{
 			"Successful",
-			[]byte(`{"id": "abcd", "name": "Milad", "value": 27}`), nil,
+			[]byte(`{"id": "1111-aaaa", "linkId": "2222-bbbb", "stars": 5}`), nil,
 			func() context.Context {
 				return context.Background()
 			},
-			"Milad",
+			"2222-bbbb",
 			false,
-			"abcd", "Milad", 27,
+			"1111-aaaa", "2222-bbbb", 5,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			sm := &redisSessionManager{
+			sm := &redisVoteManager{
 				persister: &mockPersister{
-					LoadData:  tc.loadData,
-					LoadError: tc.loadError,
+					loadData:  tc.loadData,
+					loadError: tc.loadError,
 				},
-				sessionTTL: 1 * time.Minute,
+				voteTTL: 1 * time.Minute,
 			}
 
-			session, err := sm.Get(tc.context(), tc.sessionID)
+			vote, err := sm.Get(tc.context(), tc.voteID)
 
 			if tc.expectError {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedSessionID, session.ID)
-				assert.Equal(t, tc.expectedSessionName, session.Name)
-				assert.Equal(t, tc.expectedSessionValue, session.Value)
+				assert.Equal(t, tc.expectedVoteID, vote.ID)
+				assert.Equal(t, tc.expectedVoteLinkID, vote.LinkID)
+				assert.Equal(t, tc.expectedVoteStars, vote.Stars)
 			}
 		})
 	}

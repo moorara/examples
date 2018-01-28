@@ -19,14 +19,14 @@ func TestRedisPersisterSave(t *testing.T) {
 			"WithoutUserPass",
 			"redis://redis:6379",
 			"1234",
-			[]byte("session data"),
+			[]byte("data"),
 			10 * time.Minute,
 		},
 		{
 			"WithUserPass",
 			"redis://user:pass@redis:6389",
 			"abcd",
-			[]byte("session content"),
+			[]byte("content"),
 			1 * time.Hour,
 		},
 	}

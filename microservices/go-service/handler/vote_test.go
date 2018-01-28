@@ -15,27 +15,27 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type mockSessionManager struct {
-	CreateCalled  bool
-	CreateSession *service.Session
-	CreateError   error
+type mockVoteManager struct {
+	createCalled bool
+	createVote   *service.Vote
+	createError  error
 
-	GetCalled  bool
-	GetSession *service.Session
-	GetError   error
+	getCalled bool
+	getVote   *service.Vote
+	getError  error
 }
 
-func (sm *mockSessionManager) Create(ctx context.Context, name string, value int) (*service.Session, error) {
-	sm.CreateCalled = true
-	return sm.CreateSession, sm.CreateError
+func (sm *mockVoteManager) Create(ctx context.Context, linkID string, stars int) (*service.Vote, error) {
+	sm.createCalled = true
+	return sm.createVote, sm.createError
 }
 
-func (sm *mockSessionManager) Get(ctx context.Context, id string) (*service.Session, error) {
-	sm.GetCalled = true
-	return sm.GetSession, sm.GetError
+func (sm *mockVoteManager) Get(ctx context.Context, id string) (*service.Vote, error) {
+	sm.getCalled = true
+	return sm.getVote, sm.getError
 }
 
-func TestNewSessionHandler(t *testing.T) {
+func TestNewVoteHandler(t *testing.T) {
 	tests := []struct {
 		name     string
 		redisURL string
@@ -54,17 +54,17 @@ func TestNewSessionHandler(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			rp := service.NewRedisPersister(tc.redisURL)
 			logger := log.NewNopLogger()
-			sh := NewSessionHandler(rp, logger)
+			sh := NewVoteHandler(rp, logger)
 
 			assert.NotNil(t, sh)
 		})
 	}
 }
 
-func TestPostSession(t *testing.T) {
+func TestPostVote(t *testing.T) {
 	tests := []struct {
 		name            string
-		createSession   *service.Session
+		createVote      *service.Vote
 		createError     error
 		reqBody         string
 		expectedStatus  int
@@ -80,48 +80,48 @@ func TestPostSession(t *testing.T) {
 		{
 			"InvalidJSON",
 			nil, nil,
-			`{"name": "Milad"`,
+			`{"linkId": "2222-bbbb"`,
 			400,
 			"",
 		},
 		{
-			"SessionManagerError",
+			"VoteManagerError",
 			nil, errors.New("error"),
-			`{"name": "Milad", "value": 27}`,
+			`{"linkId": "2222-bbbb", "stars": 5}`,
 			500,
 			"",
 		},
 		{
 			"Successful",
-			&service.Session{
-				ID:    "22bb",
-				Name:  "Milad",
-				Value: 27,
+			&service.Vote{
+				ID:     "1111-aaaa",
+				LinkID: "2222-bbbb",
+				Stars:  5,
 			},
 			nil,
-			`{"name": "Milad", "value": 27}`,
+			`{"linkId": "2222-bbbb", "stars": 5}`,
 			201,
-			`{"id":"22bb","name":"Milad","value":27}`,
+			`{"id":"1111-aaaa","linkId":"2222-bbbb","stars":5}`,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			sm := &mockSessionManager{
-				CreateSession: tc.createSession,
-				CreateError:   tc.createError,
+			sm := &mockVoteManager{
+				createVote:  tc.createVote,
+				createError: tc.createError,
 			}
 
-			sh := &redisSessionHandler{
+			sh := &redisVoteHandler{
 				sm:     sm,
 				logger: log.NewNopLogger(),
 			}
 
 			reqBody := strings.NewReader(tc.reqBody)
-			r := httptest.NewRequest("POST", "http://service/sessions", reqBody)
+			r := httptest.NewRequest("POST", "http://service/votes", reqBody)
 			w := httptest.NewRecorder()
 
-			sh.PostSession(w, r)
+			sh.PostVote(w, r)
 			res := w.Result()
 			body, err := ioutil.ReadAll(res.Body)
 			assert.NoError(t, err)
@@ -134,24 +134,24 @@ func TestPostSession(t *testing.T) {
 	}
 }
 
-func TestGetSession(t *testing.T) {
+func TestGetVote(t *testing.T) {
 	tests := []struct {
 		name            string
-		getSession      *service.Session
+		getVote         *service.Vote
 		getError        error
-		sessionID       string
+		voteID          string
 		expectedStatus  int
 		expectedResBody string
 	}{
 		{
-			"NoSessionID",
+			"NoVoteID",
 			nil, nil,
 			"",
 			404,
 			`{}`,
 		},
 		{
-			"SessionManagerError",
+			"VoteManagerError",
 			nil, errors.New("error"),
 			"22bb",
 			404,
@@ -159,36 +159,36 @@ func TestGetSession(t *testing.T) {
 		},
 		{
 			"Successful",
-			&service.Session{
-				ID:    "22bb",
-				Name:  "Milad",
-				Value: 27,
+			&service.Vote{
+				ID:     "1111-aaaa",
+				LinkID: "2222-bbbb",
+				Stars:  5,
 			},
 			nil,
 			"44dd",
 			200,
-			`{"id":"22bb","name":"Milad","value":27}`,
+			`{"id":"1111-aaaa","linkId":"2222-bbbb","stars":5}`,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			sm := &mockSessionManager{
-				GetSession: tc.getSession,
-				GetError:   tc.getError,
+			sm := &mockVoteManager{
+				getVote:  tc.getVote,
+				getError: tc.getError,
 			}
 
-			sh := &redisSessionHandler{
+			sh := &redisVoteHandler{
 				sm:     sm,
 				logger: log.NewNopLogger(),
 			}
 
 			mr := mux.NewRouter()
-			mr.HandleFunc("/sessions/{id:[0-9a-f]+}", sh.GetSession)
+			mr.HandleFunc("/votes/{id:[0-9a-f]+}", sh.GetVote)
 			ts := httptest.NewServer(mr)
 			defer ts.Close()
 
-			res, err := http.Get(ts.URL + "/sessions/" + tc.sessionID)
+			res, err := http.Get(ts.URL + "/votes/" + tc.voteID)
 			assert.NoError(t, err)
 			body, err := ioutil.ReadAll(res.Body)
 			assert.NoError(t, err)
