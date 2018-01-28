@@ -11,21 +11,21 @@ import (
 )
 
 type mockServer struct {
-	ListenAndServeCalled bool
-	ListenAndServeError  error
+	listenAndServeCalled bool
+	listenAndServeError  error
 
-	ShutdownCalled bool
-	ShutdownError  error
+	shutdownCalled bool
+	shutdownError  error
 }
 
 func (s *mockServer) ListenAndServe() error {
-	s.ListenAndServeCalled = true
-	return s.ListenAndServeError
+	s.listenAndServeCalled = true
+	return s.listenAndServeError
 }
 
 func (s *mockServer) Shutdown(context.Context) error {
-	s.ShutdownCalled = true
-	return s.ShutdownError
+	s.shutdownCalled = true
+	return s.shutdownError
 }
 
 func TestNew(t *testing.T) {
@@ -89,7 +89,7 @@ func TestStart(t *testing.T) {
 				},
 				logger: tc.logger,
 				server: &mockServer{
-					ListenAndServeError: tc.listenAndServeError,
+					listenAndServeError: tc.listenAndServeError,
 				},
 			}
 

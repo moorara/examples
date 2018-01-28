@@ -51,9 +51,9 @@ func TestUnit(t *testing.T) {
 		},
 		{
 			"SimplePOST",
-			"POST", "/sessions",
-			JSON{"name": "me", "value": 2.0},
-			JSON{"id": "0", "name": "me", "value": 2.0},
+			"POST", "/v1/votes",
+			JSON{"linkId": "2222-bbbb", "stars": 5.0},
+			JSON{"id": "1111-aaaa", "linkId": "2222-bbbb", "stars": 5.0},
 		},
 	}
 
@@ -109,25 +109,25 @@ func TestComponentGetMetrics(t *testing.T) {
 	assert.Contains(t, body, "# TYPE go_service_process_open_fds gauge")
 }
 
-func TestComponentPostSessions(t *testing.T) {
+func TestComponentPostVotes(t *testing.T) {
 	if !isComponentTest() {
 		t.SkipNow()
 	}
 
 	tests := []struct {
-		name         string
-		sessionName  string
-		sessionValue float64
+		name       string
+		voteLinkID string
+		voteStars  float64
 	}{
 		{
-			"WithName",
-			"me",
+			"WithLinkID",
+			"2222-bbbb",
 			0,
 		},
 		{
-			"WithNameAndValue",
-			"you",
-			20,
+			"WithLinkIDAndStars",
+			"4444-dddd",
+			3,
 		},
 	}
 
@@ -135,37 +135,37 @@ func TestComponentPostSessions(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cmp := NewComponent()
 
-			reqBody := JSON{"name": tc.sessionName}
-			if tc.sessionValue > 0 {
-				reqBody["value"] = tc.sessionValue
+			reqBody := JSON{"linkId": tc.voteLinkID}
+			if tc.voteStars > 0 {
+				reqBody["stars"] = tc.voteStars
 			}
 
-			statusCode, resBody, err := cmp.Call(context.Background(), "POST", "/sessions", reqBody)
+			statusCode, resBody, err := cmp.Call(context.Background(), "POST", "/v1/votes", reqBody)
 			assert.NoError(t, err)
 			assert.Equal(t, 201, statusCode)
 			assert.NotEmpty(t, resBody["id"])
-			assert.Equal(t, tc.sessionName, resBody["name"])
-			if tc.sessionValue > 0 {
-				assert.Equal(t, tc.sessionValue, resBody["value"])
+			assert.Equal(t, tc.voteLinkID, resBody["linkId"])
+			if tc.voteStars > 0 {
+				assert.Equal(t, tc.voteStars, resBody["stars"])
 			}
 		})
 	}
 }
 
-func TestComponentGetSession(t *testing.T) {
+func TestComponentGetVote(t *testing.T) {
 	if !isComponentTest() {
 		t.SkipNow()
 	}
 
 	tests := []struct {
 		name               string
-		sessionID          string
+		voteID             string
 		expectedStatusCode int
 		expectedBody       JSON
 	}{
 		{
-			"InvalidSessionID",
-			"2222-bbbb-4444-dddd",
+			"InvalidVoteID",
+			"2222-bbbb",
 			404,
 			JSON{
 				"message": "Not found",
@@ -177,7 +177,7 @@ func TestComponentGetSession(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cmp := NewComponent()
 
-			endpoint := "/sessions" + tc.sessionID
+			endpoint := "/v1/votes" + tc.voteID
 			statusCode, resBody, err := cmp.Call(context.Background(), "GET", endpoint, nil)
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expectedStatusCode, statusCode)
