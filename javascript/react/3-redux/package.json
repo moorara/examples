@@ -5,19 +5,19 @@
   "license": "ISC",
   "author": "Milad Irannejad",
   "scripts": {
-    "prestart": "babel-node server/message.js",
+    "prestart": "babel-node tools/message.js",
     "start": "npm-run-all --parallel test:watch open:src lint:watch",
-    "open:src": "babel-node server/index.js",
+    "open:src": "babel-node tools/index.js",
     "lint": "node_modules/.bin/esw webpack.config.*.js src server",
     "lint:watch": "npm run lint -- --watch",
-    "test": "mocha --reporter spec server/setupTest.js src/**/*.test.js src/components/**/*.test.js",
+    "test": "mocha --reporter spec tools/setupTest.js src/**/*.test.js src/components/**/*.test.js",
     "test:watch": "npm run test -- --watch",
     "remove-dist": "node_modules/.bin/rimraf ./dist",
     "clean-dist": "npm run remove-dist && mkdir dist",
-    "build:html": "babel-node build/html.js",
+    "build:html": "babel-node tools/html.js",
     "prebuild": "npm-run-all clean-dist lint test build:html",
-    "build": "babel-node build/index.js",
-    "postbuild": "babel-node server/dist.js"
+    "build": "babel-node tools/build.js",
+    "postbuild": "babel-node tools/dist.js"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
