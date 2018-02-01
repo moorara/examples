@@ -8,7 +8,7 @@
     "prestart": "babel-node tools/message.js",
     "start": "npm-run-all --parallel test:watch open:src lint:watch",
     "open:src": "babel-node tools/index.js",
-    "lint": "node_modules/.bin/esw webpack.config.*.js src server",
+    "lint": "node_modules/.bin/esw webpack.config.*.js src tools",
     "lint:watch": "npm run lint -- --watch",
     "test": "mocha --reporter spec tools/setupTest.js src/**/*.test.js src/components/**/*.test.js",
     "test:watch": "npm run test -- --watch",
