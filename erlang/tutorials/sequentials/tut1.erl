@@ -1,4 +1,5 @@
 % Variables must start with a capital letter
+% A variable can only be given a value once in its scope
 % The semicolon indicates that there is more of the function to come
 
 -module(tut1).
