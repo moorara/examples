@@ -4,4 +4,5 @@ This repo includes some toys built using all sort of my beloved programming lang
   * [Go](https://github.com/moorara/toys/tree/master/go)
   * [gRPC](https://github.com/moorara/toys/tree/master/grpc)
   * [JavaScript](https://github.com/moorara/toys/tree/master/javascript)
+  * [Rust](https://github.com/moorara/toys/tree/master/rust)
   * [Erlang](https://github.com/moorara/toys/tree/master/erlang)
