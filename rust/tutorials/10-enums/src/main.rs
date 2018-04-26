@@ -7,6 +7,7 @@ enum Color {
   Rgb(u8, u8, u8),
   Cmyk{cyan:u8, magenta:u8, yellow:u8, black:u8},  // struct
 }
+
 fn enums() {
   // let c:Color = Color::Blue;
   // let cc:Color = Color::Rgb(0, 255, 0);
