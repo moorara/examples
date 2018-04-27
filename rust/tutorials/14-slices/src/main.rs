@@ -1,4 +1,3 @@
-
 fn use_slice(slice: &mut[i32]) {
   println!("first element = {}, len ={}", slice[0], slice.len());
 

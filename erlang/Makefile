@@ -2,7 +2,7 @@ path := $(shell pwd)
 
 erlang:
 	@ docker run -it \
-	    --volume "$(path)/tutorials:/tutorial" \
+	    --volume "$(path)/tutorials:/tutorials" \
 	    erlang \
 	    bash
 

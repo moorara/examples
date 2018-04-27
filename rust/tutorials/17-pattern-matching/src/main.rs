@@ -1,5 +1,3 @@
-// https://doc.rust-lang.org/book/patterns.html
-
 #![allow(dead_code)]
 
 enum Color {

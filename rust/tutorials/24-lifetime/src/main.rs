@@ -1,5 +1,3 @@
-// https://doc.rust-lang.org/1.9.0/book/lifetimes.html
-
 fn ownership() {
   let u = 27;
   let u2 = u;
