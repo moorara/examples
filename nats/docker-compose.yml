@@ -23,10 +23,9 @@ services:
   publisher:
     <<: *goapp
     container_name: publisher
-    command: go run /go/src/github.com/moorara/toys/nats/pub-sub/publisher.go
+    command: go run /go/src/github.com/moorara/toys/nats/pub-sub/publisher.go --rate 5s
   subscriber:
     <<: *goapp
-    container_name: subscriber
     command: go run /go/src/github.com/moorara/toys/nats/pub-sub/subscriber.go
 
   requestor:

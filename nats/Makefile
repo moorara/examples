@@ -1,14 +1,15 @@
 pub-sub:
-	@ docker-compose run publisher
-	@ docker-compose run subscriber
+	@ docker-compose up -d publisher
+	@ docker-compose up -d subscriber
+	@ docker-compose scale subscriber=4
 
 req-rep:
-	@ docker-compose run requestor
-	@ docker-compose run replier
+	@ docker-compose up -d requestor
+	@ docker-compose up -d replier
 
 queueing:
-	@ docker-compose run producer
-	@ docker-compose run consumer
+	@ docker-compose up -d producer
+	@ docker-compose up -d consumer
 
 down:
 	@ docker-compose down
