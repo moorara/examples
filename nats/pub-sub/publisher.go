@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"runtime"
 	"time"
@@ -21,7 +22,9 @@ func main() {
 		natsURL = nats.DefaultURL
 	}
 
-	name := flag.String("name", "publisher", "name of publisher")
+	defaultName := fmt.Sprintf("%s-%d", "publisher", rand.Intn(100))
+
+	name := flag.String("name", defaultName, "name of publisher")
 	subject := flag.String("subject", "news", "subject to subscribe")
 	message := flag.String("message", "No news!", "message to send")
 	rate := flag.Duration("rate", time.Second, "rate of publishing messages")
@@ -39,7 +42,7 @@ func main() {
 	// Publish messages
 	ticker := time.Tick(*rate)
 	for now := range ticker {
-		msg := fmt.Sprintf("[%s] %s", now.Format(timeFormat), *message)
+		msg := fmt.Sprintf("[%s] [%s] %s", *name, now.Format(timeFormat), *message)
 		err = natsConn.Publish(*subject, []byte(msg))
 		if err != nil {
 			log.Printf("%s publish error %s\n", *name, err)

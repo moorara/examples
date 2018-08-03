@@ -31,10 +31,9 @@ services:
   requestor:
     <<: *goapp
     container_name: requestor
-    command: go run /go/src/github.com/moorara/toys/nats/req-rep/requestor.go
+    command: go run /go/src/github.com/moorara/toys/nats/req-rep/requestor.go --rate 5s
   replier:
     <<: *goapp
-    container_name: replier
     command: go run /go/src/github.com/moorara/toys/nats/req-rep/replier.go
 
   producer:

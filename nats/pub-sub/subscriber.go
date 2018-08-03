@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"runtime"
 
@@ -15,7 +17,9 @@ func main() {
 		natsURL = nats.DefaultURL
 	}
 
-	name := flag.String("name", "subscriber", "name of subscriber")
+	defaultName := fmt.Sprintf("%s-%d", "subscriber", rand.Intn(100))
+
+	name := flag.String("name", defaultName, "name of subscriber")
 	subject := flag.String("subject", "news", "subject to subscribe")
 	flag.Parse()
 
@@ -40,7 +44,7 @@ func main() {
 
 	// Wait for the server to process the request
 	err = natsConn.Flush()
-	if err != nil {
+	if err := natsConn.LastError(); err != nil {
 		log.Fatalf("%s flush error %s\n", *name, err)
 	}
 
