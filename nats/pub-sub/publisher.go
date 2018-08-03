@@ -25,7 +25,7 @@ func main() {
 	defaultName := fmt.Sprintf("%s-%d", "publisher", rand.Intn(100))
 
 	name := flag.String("name", defaultName, "name of publisher")
-	subject := flag.String("subject", "news", "subject to subscribe")
+	subject := flag.String("subject", "news", "subject to publish")
 	message := flag.String("message", "No news!", "message to send")
 	rate := flag.Duration("rate", time.Second, "rate of publishing messages")
 	flag.Parse()

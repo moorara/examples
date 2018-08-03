@@ -26,7 +26,7 @@ func main() {
 	defaultName := fmt.Sprintf("%s-%d", "requestor", rand.Intn(100))
 
 	name := flag.String("name", defaultName, "name of requestor")
-	subject := flag.String("subject", "reqs", "subject to subscribe")
+	subject := flag.String("subject", "reqs", "subject to request")
 	request := flag.String("request", "No request!", "request to send")
 	rate := flag.Duration("rate", time.Second, "rate of sending requests")
 	flag.Parse()

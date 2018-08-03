@@ -8,10 +8,11 @@ req-rep:
 
 queueing:
 	@ docker-compose up -d producer
-	@ docker-compose up -d consumer
+	@ docker-compose up -d --scale worker=2 worker
+	@ docker-compose up -d --scale qworker=2 qworker
 
 down:
 	@ docker-compose down
 
 
-.PHONY: pub-sub req-rep queueing
+.PHONY: pub-sub req-rep queueing down

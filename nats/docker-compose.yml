@@ -39,8 +39,10 @@ services:
   producer:
     <<: *goapp
     container_name: producer
-    command: go run /go/src/github.com/moorara/toys/nats/queueing/producer.go
-  consumer:
+    command: go run /go/src/github.com/moorara/toys/nats/queueing/producer.go --rate 5s
+  worker:
     <<: *goapp
-    container_name: replier
-    command: go run /go/src/github.com/moorara/toys/nats/queueing/consumer.go
+    command: go run /go/src/github.com/moorara/toys/nats/queueing/worker.go
+  qworker:
+    <<: *goapp
+    command: go run /go/src/github.com/moorara/toys/nats/queueing/worker.go --queue todo
