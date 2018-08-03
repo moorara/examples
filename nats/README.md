@@ -1,6 +1,33 @@
 # NATS Toys
 This repo includes code examples demoing [NATS](https://nats.io) messaging system.
 
+## pub-sub
+This is an example of **publish-subscribe** pattern in which
+all subscribers receive a message published on a subject.
+
+```
+make down
+make pub-sub
+```
+
+## req-rep
+This is an example of **request-reply** pattern in which
+a requestor publishes a message on a subject and expects one or more reply messages.
+
+```
+make down
+make req-rep
+```
+
+## queueing
+This an example of **queuing** pattern in which
+a messaged publsihed on a subject will be delivered to one **worker** in a group of workers.
+
+```
+make down
+make queueing
+```
+
 ## Documentation
 
   - https://www.nats.io/documentation
