@@ -1,0 +1,48 @@
+x-goapp: &goapp
+  image: golang:1.10-alpine
+  depends_on:
+    - nats
+  environment:
+    - NATS_URL=nats://nats:4222
+  volumes:
+    - ".:/go/src/github.com/moorara/toys/nats"
+
+version: "3.4"
+services:
+
+  nats:
+    image: nats
+    hostname: nats
+    container_name: nats
+    restart: always
+    ports:
+      - "4222:4222"  # Clients
+      - "6222:6222"  # Routing port for clustering
+      - "8222:8222"  # HTTP management port for information reporting
+
+  publisher:
+    <<: *goapp
+    container_name: publisher
+    command: go run /go/src/github.com/moorara/toys/nats/pub-sub/publisher.go --rate 5s
+  subscriber:
+    <<: *goapp
+    command: go run /go/src/github.com/moorara/toys/nats/pub-sub/subscriber.go
+
+  requestor:
+    <<: *goapp
+    container_name: requestor
+    command: go run /go/src/github.com/moorara/toys/nats/req-rep/requestor.go --rate 5s
+  replier:
+    <<: *goapp
+    command: go run /go/src/github.com/moorara/toys/nats/req-rep/replier.go
+
+  producer:
+    <<: *goapp
+    container_name: producer
+    command: go run /go/src/github.com/moorara/toys/nats/queueing/producer.go --rate 5s
+  worker:
+    <<: *goapp
+    command: go run /go/src/github.com/moorara/toys/nats/queueing/worker.go
+  qworker:
+    <<: *goapp
+    command: go run /go/src/github.com/moorara/toys/nats/queueing/worker.go --queue todo
