@@ -1,0 +1,52 @@
+version: "3.7"
+
+services:
+
+  postgres:
+    image: postgres:10.5
+    hostname: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - "54320:5432"
+    environment:
+      - PGDATA=/database
+      - POSTGRES_DB=concourse
+      - POSTGRES_USER=concourse
+      - POSTGRES_PASSWORD=password?!
+
+  concourse-web:
+    image: concourse/concourse:4.1.0
+    hostname: concourse-web
+    container_name: concourse-web
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      - CONCOURSE_POSTGRES_HOST=postgres
+      - CONCOURSE_POSTGRES_DATABASE=concourse
+      - CONCOURSE_POSTGRES_USER=concourse
+      - CONCOURSE_POSTGRES_PASSWORD=password?!
+      - CONCOURSE_EXTERNAL_URL
+      - CONCOURSE_MAIN_TEAM_ALLOW_ALL_USERS=true
+      - CONCOURSE_ADD_LOCAL_USER=admin:pass
+    volumes:
+      - "./keys/web:/concourse-keys"
+    command: [ "web" ]
+
+  concourse-worker:
+    image: concourse/concourse:4.1.0
+    hostname: concourse-worker
+    container_name: concourse-worker
+    restart: always
+    privileged: true
+    depends_on:
+      - concourse-web
+    environment:
+      - CONCOURSE_GARDEN_NETWORK
+      - CONCOURSE_TSA_HOST=concourse-web:2222
+    volumes:
+      - "./keys/worker:/concourse-keys"
+    command: [ "worker" ]

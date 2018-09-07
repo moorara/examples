@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+
+  postgres:
+    image: postgres:10.5
+    hostname: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - "54320:5432"
+    environment:
+      - PGDATA=/database
+      - POSTGRES_DB=concourse
+      - POSTGRES_USER=concourse
+      - POSTGRES_PASSWORD=password?!
+
+  concourse:
+    image: concourse/concourse:4.1.0
+    hostname: concourse
+    container_name: concourse
+    restart: always
+    privileged: true
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      - CONCOURSE_POSTGRES_HOST=postgres
+      - CONCOURSE_POSTGRES_DATABASE=concourse
+      - CONCOURSE_POSTGRES_USER=concourse
+      - CONCOURSE_POSTGRES_PASSWORD=password?!
+      - CONCOURSE_ADD_LOCAL_USER=test:$$2a$$10$$0W9/ilCpYXY/yCPpaOD.6eCrGda/fnH3D4lhsw1Mze0WTID5BuiTW
+      - CONCOURSE_MAIN_TEAM_ALLOW_ALL_USERS=true
+      - CONCOURSE_EXTERNAL_URL
+      - CONCOURSE_WORKER_GARDEN_NETWORK
+    command: [ "quickstart" ]
