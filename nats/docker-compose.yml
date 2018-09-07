@@ -20,6 +20,16 @@ services:
       - "6222:6222"  # Routing port for clustering
       - "8222:8222"  # HTTP management port for information reporting
 
+  nats-streaming:
+    image: nats-streaming
+    hostname: nats-streaming
+    container_name: nats-streaming
+    restart: always
+    ports:
+      - "4222:4223"  # Clients
+      - "6222:6223"  # Routing port for clustering
+      - "8222:8223"  # HTTP management port for information reporting
+
   publisher:
     <<: *goapp
     container_name: publisher
