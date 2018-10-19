@@ -7,3 +7,4 @@ This repo includes some toys built using all sort of my beloved programming lang
   * [Rust](./rust)
   * [Erlang](./erlang)
   * [NATS](./nats)
+  * [WebAssembly](./wasm)
