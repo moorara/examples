@@ -1,0 +1,24 @@
+{
+  "name": "graphql",
+  "version": "0.1.0",
+  "description": "A GraphQL demo",
+  "main": "index.js",
+  "author": "Milad Irannejad",
+  "license": "ISC",
+  "scripts": {
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "start": "yarn lint && nodemon index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.0.2",
+    "graphql-tools": "^4.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.7",
+    "standard": "^12.0.1"
+  }
+}

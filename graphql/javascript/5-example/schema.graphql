@@ -1,0 +1,32 @@
+type Query {
+  "Retrieve all teams"
+  teams: [Team!]!
+  "Retrieve memebers of a team"
+  members(teamId: ID!): [Member!]
+}
+
+type Mutation {
+  "Add a new team"
+  addTeam(name: String!): Team!
+  "Add a new member to a team"
+  addMember(teamId: ID!, name: String!, email: String): Member!
+}
+
+"""
+Team is a group of people!
+"""
+type Team {
+  id: ID!
+  name: String!
+  members: [Member!]!
+}
+
+"""
+Member is an individual belonging to one team.
+"""
+type Member {
+  id: ID!
+  teamId: ID!
+  name: String!
+  email: String
+}
