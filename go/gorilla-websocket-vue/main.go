@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/moorara/go-examples/gorilla-websocket-vue/service"
+	"github.com/moorara/toys/go/gorilla-websocket-vue/service"
 )
 
 func main() {
