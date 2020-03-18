@@ -1,3 +1,3 @@
-# Toys
+# Examples
 
-This repo includes some toys built using all sort of my beloved programming languages, frameworks, libraries, and tools!
+This repo includes examples of miscellaneous programming languages, frameworks, libraries, and tools!
